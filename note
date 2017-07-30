@@ -1,0 +1,48 @@
+bbs论坛
+网络安全
+发布部署管理的方案
+
+论坛功能:
+在首页看到所有帖子 /topic/
+帖子的详细页面/topic/<id> (mongo/现在暂时是txt) 内包含各种回复 在Model类里进行数据库的无缝切换, 以后写程序也要追求这样的效果,
+一个框架对于我们而言, 有两个功能很重要:
+1. 注册路由以及method;
+2. 获取request数据(在path中或body里), 封装好的(request.form等)或没封装的(request.get_data())
+模板(Model)和试图(view)与框架的关系不大
+
+
+markdown 之后再做
+
+拷贝页面的方法: Ctrl+s 保存完整的页面(得到一个html文件和一个文件夹(内有css文件))
+
+嵌套层次过深: 不必要的嵌套过多
+
+setattr 的使用
+
+2
+reply功能与点击用户名到用户主页功能
+url_for的参数省略规则
+jinja for 下标
+jinja的文档里有很多有用的功能
+setInterval 函数
+moment.js
+
+web安全
+csrf
+xss
+服务器部署
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
