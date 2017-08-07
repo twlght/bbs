@@ -28,10 +28,24 @@ setInterval 函数
 moment.js
 
 web安全
-csrf
-xss
-服务器部署
+csrf 跨站请求伪造 (点击领取金币<a href="http://localhost:2000/topic/delete?id=1">)
+    <img src="http://localhost:2000/topic/delete?id=1"> 浏览器自动请求
+    也可以有post请求
+    解决方法 确保用户从自己的网站链接进入 在页面中插入一个隐藏的input字段 字段内容是随机生成的
+验证码的两个功能: 防止机器人和csrf(外面的链接没有验证码, 或者是错的)
 
+xss
+用户发送脚本内容 script 可以执行代码(比如说拿到用户的cookie)
+
+
+服务器部署
+wsgi.py
+gunicorn host一个pythonweb服务器
+supervisor 监控 自动重启
+nginx web服务器 gunicorn之前
+nginx可以一次配置n个程序, 映射到不同的gunicorn端口, gunicorn不可能独占一个80端口, 由nginx占用80端口
+gunicorn 用于运行我们的程序, nginx用来作服务器把请求转发给gunicorn, supervisor用于监控所有程序, 确保一直在运行
+尽量不要在服务器上改程序, 只运行程序
 
 
 

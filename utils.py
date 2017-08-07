@@ -20,7 +20,7 @@ def log2(*args, **kwargs):
     value = time.localtime(int(time.time()))
     dt = time.strftime(format, value)
     # with open('gua.log.txt', 'a', encoding='utf-8') as f:
-    print(dt, *args, **kwargs)
+    print('**', dt, *args, **kwargs)
 
 
 if __name__ == '__main__':

@@ -183,7 +183,7 @@ class Model(object):
                 if m.id == self.id:
                     index = i
                     break
-            log('debug', index)
+            # log('debug', index)
             models[index] = self
         l = [m.__dict__ for m in models]
         path = self.db_path()

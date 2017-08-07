@@ -23,7 +23,15 @@
                     </a>
                 </div>
             </div>
+                        <div class="panel">
+                <div class="inner">
+                    <a href="/board/new" class="create_topic_btn">
+                        <span class="span-success">新建版本</span>
+                    </a>
+                </div>
+            </div>
         </div>
+
         <div id="content">
             <div class="panel">
                 <div class="inner post">
@@ -35,6 +43,9 @@
                                     {{ t.title }}
                                 </a>
                                 <span>{{ t.replies() | count }} / {{ t.views }}</span>
+                                <a class="topic_delete" href="{{ url_for('topic.delete', id=t.id, token=token) }}">
+                                    删除
+                                </a>
                             </div>
                         </div>
                         {% endfor %}
