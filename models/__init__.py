@@ -1,193 +1,221 @@
-import json
 import time
-from utils import log, log2
+from pymongo import MongoClient  # pymongo v3.5
+from bson.objectid import ObjectId
+
+mongo_client = MongoClient()  # 默认localhost:27017
 
 
-def save(data, path):
-    """
-    data 是 dict 或者 list
-    path 是保存文件的路径
-    """
-    s = json.dumps(data, indent=2, ensure_ascii=False)
-    with open(path, 'w+', encoding='utf-8') as f:
-        # log('save', path, s, data)
-        f.write(s)
+def timestamp():
+    return int(time.time())
 
 
-def load(path):
-    with open(path, 'r', encoding='utf-8') as f:
-        s = f.read()
-        # log('load', s)
-        return json.loads(s)
+'''
+pymongo中Collection的操作(Collection level operations):
+bulk_write
+
+insert_many
+insert_one  替代insert()
+replace_one  后两个替代save()
+
+update_one
+update_many  替代update()
+
+delete_one
+delete_many  替代remove()
+
+find
+find_one
+
+find_one_and_delete
+find_one_and_replace
+find_one_and_update   这三个替代 find_and_modify 
+
+count(Get the number of documents in this collection.)
+各种index
+drop(collection)
+options(Get the options set on this collection.)
+map_reduce
+没有upsert方法, find方法的参数有upsert
+
+find_one_and_update 与 update_one
+find_one_and_update: 返回单个文档(BEFORE or AFTER)并update
+update_one: update and return a instance of UpdateResult
+
+API:
+save
+new
+find
+delete
+'''
 
 
-# Model 是一个 ORM（object relation mapper）
-# 好处就是不需要关心存储数据的细节，直接使用即可
-class Model(object):
-    """
-    Model 是所有 model 的基类
-    @classmethod 是一个套路用法
-    例如
-    user = User()
-    user.db_path() 返回 User.txt
-    """
+class Mongo(object):
+    def __init__(self, form):
+        if '_id' in form.keys():
+            self._id = form.get('_id')  # ObjectId
+            self.id = str(self._id)  # str -> _id
+        self.type = form.get('type', self.__class__.__name__.lower())
+        self.deleted = form.get('deleted', False)
+        self.created_time = form.get('created_time', int(time.time()))
+        self.updated_time = form.get('updated_time', int(time.time()))
+
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        properties = ('{0} = {1}'.format(k, v) for k, v in self.__dict__.items())
+        return '<{0}: \n  {1}\n>'.format(class_name, '\n  '.join(properties))
+
     @classmethod
-    def db_path(cls):
-        """
-        cls 是类名, 谁调用的类名就是谁的
-        classmethod 有一个参数是 class(这里我们用 cls 这个名字)
-        所以我们可以得到 class 的名字
-        """
-        classname = cls.__name__
-        path = 'data/{}.txt'.format(classname)
-        return path
+    def insert_one(cls, *args, **kwargs):
+        return mongo_client.db[cls.__name__].insert_one(*args, **kwargs)
 
     @classmethod
-    def _new_from_dict(cls, d):
-        # 因为子元素的 __init__ 需要一个 form 参数
-        # 所以这个给一个空字典
-        m = cls({})
-        for k, v in d.items():
-            # setattr 是一个特殊的函数
-            # 假设 k v 分别是 'name'  'gua'
-            # 它相当于 m.name = 'gua'
-            setattr(m, k, v)
+    def insert_many(cls, *args, **kwargs):
+        return mongo_client.db[cls.__name__].insert_many(*args, **kwargs)
+
+    @classmethod
+    def update_one(cls, *args, **kwargs):
+        return mongo_client.db[cls.__name__].update_one(*args, **kwargs)
+
+    @classmethod
+    def update_many(cls, *args, **kwargs):
+        return mongo_client.db[cls.__name__].update_many(*args, **kwargs)
+
+    @classmethod
+    def replace_one(cls, *args, **kwargs):
+        return mongo_client.db[cls.__name__].replace_one(*args, **kwargs)
+
+    @classmethod
+    def replace_many(cls, *args, **kwargs):
+        return mongo_client.db[cls.__name__].replace_many(*args, **kwargs)
+
+    @classmethod
+    def find(cls, *args, **kwargs):
+        collection = mongo_client.db[cls.__name__]
+        # TODO 过滤掉被删除的元素
+        if '_id' in kwargs.keys() and \
+                not isinstance(kwargs['_id'], ObjectId):
+                kwargs['_id'] = ObjectId(kwargs['_id'])
+        bs = collection.find(kwargs)
+        # bs 是 Cursor object, 对其迭代->call __next__() ->  \
+        # -> 在__next__()中生成_Query instance, 发送查询数据, 返回dict类型
+        # for b in bs:
+        #     print(b)
+        ms = [cls._new_with_bson(b) for b in bs]
+        return ms
+
+    @classmethod
+    def new(cls, *args, **kwargs):
+        return cls.new_and_save(*args, **kwargs)
+
+    @classmethod
+    def new_and_save(cls, form=None, **kwargs):
+        if form is None:
+            form = {}
+        m = cls(form)
+        for k, v in kwargs.items():
+            if hasattr(m, k):
+                setattr(m, k, v)
+            else:
+                raise KeyError
+        m.save()
+        # cls.insert_one(m.__dict__)
         return m
 
     @classmethod
-    def new(cls, form, **kwargs):
-        m = cls(form)
-        # 额外地设置 m 的属性
-        for k, v in kwargs.items():
-            # 这是一个神奇的函数, 可以设置对象的属性
-            setattr(m, k, v)
-        m.save()
+    def _new_with_bson(cls, bson):  # bson : dict
+        # print(bson)
+        if bson is None:
+            bson = {}
+        m = cls(bson)
+        # setattr(m, '_id', bson['_id'])
         return m
 
     @classmethod
     def all(cls):
-        """
-        all 方法(类里面的函数叫方法)使用 load 函数得到所有的 models
-        """
-        path = cls.db_path()
-        models = load(path)
-        # 这里用了列表推导生成一个包含所有 实例 的 list
-        # 因为这里是从 存储的数据文件 中加载所有的数据
-        # 所以用 _new_from_dict 这个特殊的函数来初始化一个数据
-        ms = [cls._new_from_dict(m) for m in models]
-        return ms
+        return cls.find()
 
     @classmethod
     def find_all(cls, **kwargs):
-        ms = []
-        log('kwargs, ', kwargs, type(kwargs))
-        k, v = '', ''
-        for key, value in kwargs.items():
-            k, v = key, value
-        all = cls.all()
-        for m in all:
-            # 也可以用 getattr(m, k) 取值
-            if v == m.__dict__[k]:
-                ms.append(m)
+        return cls.find(**kwargs)
+
+    @classmethod
+    def find_one(cls, *args, **kwargs):
+        collection = mongo_client.db[cls.__name__]
+        # TODO
+        if '_id' in kwargs.keys() and \
+                not isinstance(kwargs['_id'], ObjectId):
+                kwargs['_id'] = ObjectId(kwargs['_id'])
+        document = collection.find_one(kwargs)
+        # document['_id'] -> ObjectId
+        # print(document)
+        if document is None:
+            return None
+        else:
+            m = cls._new_with_bson(document)
+            return m
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.find_one(_id=id)
+
+    @classmethod
+    def find_one_and_delete(cls, *args, **kwargs):
+        collection = mongo_client.db[cls.__name__]
+        # TODO 过滤掉被删除的元素
+        document = collection.find_one_and_delete(*args, **kwargs)
+        return document
+
+    @classmethod
+    def find_one_and_update(cls, *args, **kwargs):
+        collection = mongo_client.db[cls.__name__]
+        # TODO 过滤掉被删除的元素
+        document = collection.find_one_and_update(*args, **kwargs)
+        return document
+
+    @classmethod
+    def find_one_and_replace(cls, *args, **kwargs):
+        collection = mongo_client.db[cls.__name__]
+        # TODO 过滤掉被删除的元素
+        document = collection.find_one_and_replace(*args, **kwargs)
+        return document
+
+    @classmethod  # update and insert
+    def upsert(cls, filter_form, update_form, **kwargs):
+        # collection = mongo_client.db[cls.__name__]
+        ms = cls.find_one_and_update(filter_form, update_form, **kwargs)
+        if ms is None:
+            filter_form.update(**update_form)  # dict.update
+            ms = cls.new_and_save(filter_form)
+            # ms.update(update_form, hard=hard)
         return ms
 
     @classmethod
-    def find_by(cls, **kwargs):
-        """
-        用法如下，kwargs 是只有一个元素的 dict
-        u = User.find_by(username='gua')
-        """
-        # log2('kwargs, ', kwargs, type(kwargs))
-        k, v = '', ''
-        for key, value in kwargs.items():
-            k, v = key, value
-        all = cls.all()
-        for m in all:
-            # 也可以用 getattr(m, k) 取值
-            if v == m.__dict__[k]:
-                return m
-        return None
+    def delete(cls, **filter_form):
+        # todo!!!
+        ms = cls.find_one_and_update(filter_form, {'deleted': True})
+        return ms
 
-    @classmethod
-    def find(cls, id):
-        # log2('in find id =', id)
-        return cls.find_by(id=id)
-
-    @classmethod
-    def get(cls, id):
-        return cls.find_by(id=id)
-
-    @classmethod
-    def delete(cls, id):
-        models = cls.all()
-        index = -1
-        for i, e in enumerate(models):
-            if e.id == id:
-                index = i
-                break
-        # 判断是否找到了这个 id 的数据
-        if index == -1:
-            # 没找到
-            pass
+    def update(self, **update_form):
+        if hasattr(self, '_id'):
+            return self.update_one({'_id': self._id}, update_form)
         else:
-            obj = models.pop(index)
-            l = [m.__dict__ for m in models]
-            path = cls.db_path()
-            save(l, path)
-            # 返回被删除的元素
-            return obj
-
-    def __repr__(self):
-        """
-        __repr__ 是一个魔法方法
-        简单来说, 它的作用是得到类的 字符串表达 形式
-        比如 print(u) 实际上是 print(u.__repr__())
-        """
-        classname = self.__class__.__name__
-        properties = ['{}: ({})'.format(k, v) for k, v in self.__dict__.items()]
-        s = '\n'.join(properties)
-        return '< {}\n{} \n>\n'.format(classname, s)
-
-    def json(self):
-        """
-        返回当前 model 的字典表示
-        """
-        # copy 会复制一份新数据并返回
-        d = self.__dict__.copy()
-        return d
+            raise KeyError  # TODO 找个合适的ERROR
 
     def save(self):
-        """
-        用 all 方法读取文件中的所有 model 并生成一个 list
-        把 self 添加进去并且保存进文件
-        """
-        # log('debug save')
-        models = self.all()
-        # log('models', models)
-        # 如果没有 id，说明是新添加的元素
-        if self.id is None:
-            # 设置 self.id
-            # 先看看是否是空 list
-            if len(models) == 0:
-                # 我们让第一个元素的 id 为 1（当然也可以为 0）
-                self.id = 1
-            else:
-                m = models[-1]
-                # log('m', m)
-                self.id = m.id + 1
-            models.append(self)
+        # __init__出来还未储存的没有'_id"
+        if hasattr(self, '_id'):
+            self.replace_one({'_id': self._id}, self.__dict__)
         else:
-            # index = self.find(self.id)
-            index = -1
-            for i, m in enumerate(models):
-                if m.id == self.id:
-                    index = i
-                    break
-            # log('debug', index)
-            models[index] = self
-        l = [m.__dict__ for m in models]
-        path = self.db_path()
-        save(l, path)
+            r = self.insert_one(self.__dict__)  # insert_one 参数是一个dict
+            setattr(self, '_id', r.inserted_id)
+            setattr(self, 'id', str(r.inserted_id))
+
+            # insert_one or replace_one
+            # return self.upsert(query_form=self.__dict__, update_form=None)
+
+            # collection = mongo_client.db[self.__class__.__name__]
+            # # # print(self.__dict__)  # 这时没有'_id'
+            # collection.save(self.__dict__)  # 现在有了'_id'
 
     @staticmethod
     def localtime(tm):
@@ -195,3 +223,28 @@ class Model(object):
         value = time.localtime(tm)
         dt = time.strftime(format, value)
         return dt
+
+
+def tst():
+    d = {
+        'id': 5,
+    }
+    if 'id' in d.keys():
+        print('True')
+    # r = Mongo(form)
+    # print(r._id)
+    # r.id = 1
+    # r.save()
+    # foo = Mongo.new(form)
+    # Mongo.delete(id=5)
+    # print(ms)
+    # mongo_client.drop_database('data')  # delete database
+    # ms = mongo_client.db['Mongo'].insert_one({'id': 5}, {'$set': {'deleted': False}})
+    # Mongo.replace_one({'id': 1}, {'deleted': False})  # 第二个参数, 要整个document, 不然就用update
+    # print(ms)
+
+    pass
+
+
+if __name__ == '__main__':
+    tst()

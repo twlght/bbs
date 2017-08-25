@@ -1,4 +1,4 @@
-from models import Model
+from models import Mongo as Model
 
 
 class User(Model):
@@ -7,12 +7,15 @@ class User(Model):
     现在只有两个属性 username 和 password
     """
     def __init__(self, form):
-        self.id = form.get('id', None)
+        super().__init__(form)
+        # self.id = form.get('id', None)
         self.username = form.get('username', '')
         self.password = form.get('password', '')
+        self.filename = 'my_pc.jpg'
 
     def salted_password(self, password, salt='$!@><?>HUI&DWQa`'):
         import hashlib
+
         def sha256(ascii_str):
             return hashlib.sha256(ascii_str.encode('ascii')).hexdigest()
         hash1 = sha256(password)
@@ -31,7 +34,7 @@ class User(Model):
     def register(cls, form):
         name = form.get('username', '')
         pwd = form.get('password', '')
-        if len(name) > 2 and User.find_by(username=name) is None:
+        if len(name) > 2 and User.find_one(username=name) is None:
             u = User.new(form)
             u.password = u.salted_password(pwd)
             u.save()
@@ -42,9 +45,17 @@ class User(Model):
     @classmethod
     def validate_login(cls, form):
         u = User(form)
-        user = User.find_by(username=u.username)
+        user = User.find_one(username=u.username)
         if user is not None and user.password == u.salted_password(u.password):
             return user
         else:
             return None
 
+
+def tst():
+    r = User.find_one(username='qwe')
+    print(type(r.id))
+
+
+if __name__ == '__main__':
+    tst()

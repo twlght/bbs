@@ -14,6 +14,15 @@
     <script src="/static/lib/editor/ext.js"></script>
 </head>
 <body>
+    <a href="/topic/" class="create_topic_btn">
+        <span class="span-success">全部</span>
+    </a>
+    {% for b in bs %}
+    <a href="/topic/?board_id={{ b.id }}" class="create_topic_btn">
+        <span class="span-success">{{ b.board_name }}</span>
+    </a>
+    {% endfor %}
+
     <div id="main">
         <div id="sidebar">
             <div class="panel">
@@ -23,10 +32,10 @@
                     </a>
                 </div>
             </div>
-                        <div class="panel">
+            <div class="panel">
                 <div class="inner">
                     <a href="/board/new" class="create_topic_btn">
-                        <span class="span-success">新建版本</span>
+                        <span class="span-success">新建版块</span>
                     </a>
                 </div>
             </div>

@@ -24,7 +24,7 @@ reply功能与点击用户名到用户主页功能
 url_for的参数省略规则
 jinja for 下标
 jinja的文档里有很多有用的功能
-setInterval 函数
+setInterval 函数 (js)
 moment.js
 
 web安全
@@ -35,7 +35,7 @@ csrf 跨站请求伪造 (点击领取金币<a href="http://localhost:2000/topic/
 验证码的两个功能: 防止机器人和csrf(外面的链接没有验证码, 或者是错的)
 
 xss
-用户发送脚本内容 script 可以执行代码(比如说拿到用户的cookie)
+用户发送脚本内容 script 可以执行代码(比如说拿到用户的cookie) 不要禁止转义
 
 
 服务器部署
@@ -46,6 +46,99 @@ nginx web服务器 gunicorn之前
 nginx可以一次配置n个程序, 映射到不同的gunicorn端口, gunicorn不可能独占一个80端口, 由nginx占用80端口
 gunicorn 用于运行我们的程序, nginx用来作服务器把请求转发给gunicorn, supervisor用于监控所有程序, 确保一直在运行
 尽量不要在服务器上改程序, 只运行程序
+将gunicorn的配置放在一个文件中 这样supervisor的配置就简单些, 直接读取配置文件就行, 编辑修改维护都简单
+bbs.conf  supevisor的配置
+directory=/var/www/bbs(程序就要传到这个目录里面)
+bbs.nginx nginx的配置
+
+"""
+建立一个软连接
+ln -s /var/www/bbs/bbs.conf /etc/supervisor/conf.d/bbs.conf  在后者的地方增加一个链接, 链接到前者  改动跟随 不用更新服务器, 直接重启服务器的程序就可以了
+
+ln -s /var/www/bbs/bbs.nginx /etc/nginx/sites-enabled/bbs
+
+
+
+➜  ~ cat /etc/supervisor/conf.d/bbs.conf
+
+[program:bbs]
+command=/usr/local/bin/gunicorn wsgi -c gunicorn.config.py
+directory=/var/www/bbs
+autostart=true
+autorestart=true
+
+
+
+
+/usr/local/bin/gunicorn wsgi
+--bind 0.0.0.0:2001
+--pid /tmp/blog.pid
+"""
+
+可以把配置文件放在一个目录里
+想要拥有更多的权力, 就要把更多的事情做好, 这很重要, 不管你是不是程序员
+人跟人的差距在于发现问题与解决问题的能力
+
+
+web20
+上传用户头像(上传文件)
+私信功能
+切换到Mongo
+
+上传头像
+<input type=submit value=Upload>
+<button type=submit>Upload</button> 等价
+request.files <class FileStorage>
+file.name
+file.save
+jpg/jpeg 一样的 都是jpeg格式
+
+
+An important note about collections (and databases) in MongoDB is that
+they are created lazily - none of the above commands have actually performed any operations on the MongoDB server.
+Collections and databases are created when the first document is inserted into them.
+
+
+
+css基础
+html定义内容
+css定义样式
+js操控行为 很解耦的设计
+html -> css  pc端
+     -> css  手机端
+
+css的使用
+    1.内联(inline style attribute) 完全不该这样做
+    2.<style> 标签 在<head>内
+    3.<link> 标签 外联  连接css文件
+
+css支持的注释方式 /*     */ only
+css选择器和dom api 选择器是一样的
+三种选择器   元素选择器,
+             class选择器,
+             id选择器
+
+样式优先级(从高到低)
+!important
+内联样式
+外联, 内部按顺序, 后者覆盖前者
+
+选择器优先级:
+!important
+内联
+id选择器
+class选择器,
+元素选择器,
+
+display 属性
+none  不显示
+block 占一行, 默认block的有div,p,ul,ol,li,h1-h6
+inline 只占content的尺寸, 不会独占一行, 会自动排到下一行
+inline-block 对外表现为inline 对内表现为block
+
+
+
+
 
 
 

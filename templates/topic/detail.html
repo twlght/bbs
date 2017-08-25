@@ -16,7 +16,21 @@
     <script src="/static/lib/moment.js"></script>
 </head>
 <body>
+
 <div id="main">
+
+
+    <div id="sidebar">
+            <div class="panel">
+                <div class="inner">
+                    <a href="/topic" class="create_topic_btn">
+                        <span class="span-success">回到首页</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
     <div id="content">
         <div class='panel'>
             <div class='header topic_header'>
@@ -26,7 +40,7 @@
                 <div class="changes">
             <span>
                 <!--时间的格式转换-->
-                更新于 {{ topic.localtime(topic.ut) }}
+                更新于 {{ topic.localtime(topic.updated_time) }}
             </span>
             <span>
                 {% set u = topic.user() %}
@@ -64,7 +78,7 @@
         <div class='cell reply_area reply_item'>
             <div class='author_content'>
                 <a href="{{ url_for('index.user_detail', id=u.id) }}" class="user_avatar">
-                    <img src="https://avatars2.githubusercontent.com/u/10721874?v=3&amp;s=120"
+                    <img src="/upload/{{ u.filename }}"
                          title="{{ u.username }}"/>
                 </a>
                 <div class='user_info'>
@@ -73,7 +87,7 @@
                     </a>
                     <a class="reply_time">
                         {{ loop.index }}楼 / {{ loop.length }}楼 •
-                        <span class="gua-time" id="{{ r.ct }}"></span>
+                        <span class="gua-time" id="{{ r.created_time }}"></span>
                     </a>
                 </div>
                 <div class='user_action'>

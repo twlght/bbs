@@ -21,8 +21,8 @@ def add():
     log2('DEBUG', form)
     u = current_user()
     # print('DEBUG', form)
-    m = Reply.new(form, user_id=u.id)
-    return redirect(url_for('topic.detail', id=m.topic_id))
+    m = Reply.new(form, user_id=u.id)  # str
+    return redirect(url_for('topic.detail', id=m.topic_id))  # str
 
 
 if __name__ == '__main__':

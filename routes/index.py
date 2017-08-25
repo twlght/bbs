@@ -6,22 +6,18 @@ from flask import (
     url_for,
     Blueprint,
     abort,
+    send_from_directory
 )
 
 from models.user import User
-
-from utils import log
+from utils import log, log2
+import uuid
+import os
+import config.config as config
+from routes import current_user
+from bson.objectid import ObjectId
 
 main = Blueprint('index', __name__)
-
-
-def current_user():
-    # 从 session 中找到 user_id 字段, 找不到就 -1
-    # 然后 User.find_by 来用 id 找用户
-    # 找不到就返回 None
-    uid = session.get('user_id', -1)
-    u = User.find_by(id=uid)
-    return u
 
 
 """
@@ -58,9 +54,20 @@ def login():
     else:
         # session 中写入 user_id
         session['user_id'] = u.id
+        log2(session)
         # 设置 cookie 有效期为 永久
         session.permanent = True
         return redirect(url_for('topic.index'))
+
+
+@main.route('/user/<id>')  # 用id不重复
+def user_detail(id):
+    u = User.find_by_id(id)
+    if u is None:
+        abort(404)
+    else:
+        return render_template('profile.html', user=u)
+        # abort(404)
 
 
 @main.route('/profile')
@@ -72,11 +79,27 @@ def profile():
         return render_template('profile.html', user=u)
 
 
-@main.route('/user/<int:id>')  # 用id不重复
-def user_detail(id):
-    u = User.find(id)
-    if u is None:
-        abort(404)
+@main.route('/add_img', methods=["POST"])
+def add_img():
+    file = request.files.get('file', None)
+    # log2(request.files)
+    # log2(type(file))
+    # log2(file.filename)
+    suffix = file.filename.split('.')[-1]
+    # log2(suffix)
+    if suffix in config.allowed_suffix:
+        filename = '{}.{}'.format(uuid.uuid4(), suffix)
+        u = current_user()
+        u.filename = filename
+        u.save()
+        # log2(u.filename)
+        file.save(os.path.join(config.users_img_directory, filename))
+        return redirect(url_for('.profile'))
     else:
-        return render_template('profile.html', user=u)
-        # abort(404)
+        abort(403)
+
+
+@main.route('/upload/<filename>')
+def upload(filename):
+    return send_from_directory('users_img', filename)
+

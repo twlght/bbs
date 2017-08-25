@@ -6,12 +6,19 @@ from flask import (
     Blueprint,
     abort,
 )
-
 from routes import *
-
 # from models.topic import Topic
 from models.board import Board
 from utils import log2
+'''
+板块的添加属于管理员操作
+topic页面显示所有版块
+添加新
+topic
+的时候, 需要选择板块
+默认会给你选中当前板块
+'''
+
 
 main = Blueprint('board', __name__)
 
@@ -34,7 +41,7 @@ def add():
     form = request.form
     log2(form)
     u = current_user()
-    if u.id == 6:
+    if u.username == 'qwe':
         b = Board.new(form)
         return redirect(url_for('board.all'))
     else:

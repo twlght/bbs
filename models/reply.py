@@ -1,17 +1,19 @@
 import time
-from models import Model
+from models import Mongo as Model
+from bson.objectid import ObjectId
 
 
 class Reply(Model):
     def __init__(self, form):
-        self.id = None
+        super().__init__(form)
+        # self.id = None
         self.content = form.get('content', '')
-        self.ct = int(time.time())
-        self.ut = self.ct
-        self.topic_id = int(form.get('topic_id', -1))
-        # self.user_id = int(form.get('user_id', 1)) user_id是在cls.new()里加上的
+        # self.ct = int(time.time())
+        # self.ut = self.ct
+        self.topic_id = form.get('topic_id', '')
+        self.user_id = form.get('user_id', '')  # user_id是在cls.new()里加上的
 
     def user(self):
         from .user import User
-        u = User.find(self.user_id)
+        u = User.find_by_id(self.user_id)  # str
         return u
