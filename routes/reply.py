@@ -19,9 +19,11 @@ main = Blueprint('reply', __name__)
 def add():
     form = request.form
     log2('DEBUG', form)
-    u = current_user()
+    cur_user = current_user()
+    if cur_user is None:
+        return redirect(url_for('index.index'))
     # print('DEBUG', form)
-    m = Reply.new(form, user_id=u.id)  # str
+    m = Reply.new(form, user_id=cur_user.id)  # str
     return redirect(url_for('topic.detail', id=m.topic_id))  # str
 
 

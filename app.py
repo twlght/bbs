@@ -5,7 +5,7 @@ from config import config
 def register_routes(app):
     """
     在 flask 中，模块化路由的功能由 蓝图（Blueprints）提供
-    蓝图可以拥有自己的静态资源路径、模板路径（现在还没涉及）
+    蓝图可以拥有自己的静态资源路径、模板路径
     用法如下
     注册蓝图
     有一个 url_prefix 可以用来给蓝图中的每个路由加一个前缀
@@ -14,11 +14,13 @@ def register_routes(app):
     from routes.topic import main as topic_routes
     from routes.reply import main as reply_routes
     from routes.board import main as board_routes
+    from routes.auth import main as auth_routes
 
     app.register_blueprint(index_routes)
     app.register_blueprint(topic_routes, url_prefix='/topic')
     app.register_blueprint(reply_routes, url_prefix='/reply')
     app.register_blueprint(board_routes, url_prefix='/board')
+    app.register_blueprint(auth_routes)
 
 
 def configured_app():

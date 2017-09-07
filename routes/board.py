@@ -40,8 +40,8 @@ main = Blueprint('board', __name__)
 def add():
     form = request.form
     log2(form)
-    u = current_user()
-    if u.username == 'qwe':
+    cur_user = current_user()
+    if cur_user.username == 'qwe':
         b = Board.new(form)
         return redirect(url_for('board.all'))
     else:
@@ -50,10 +50,13 @@ def add():
 
 @main.route("/new")
 def new():
-    return render_template("board/new.html")
+    cur_user = current_user()
+
+    return render_template("board/new.html", cur_user=cur_user)
 
 
 @main.route("/all")
 def all():
+    cur_user = current_user()
     bs = Board.all()
-    return render_template("board/all.html", boards=bs)
+    return render_template("board/all.html", boards=bs, cur_user=cur_user)

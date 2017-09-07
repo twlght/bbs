@@ -5,7 +5,9 @@ from bson.objectid import ObjectId
 
 
 def current_user():
-    user_id = session.get('user_id', '')
+    user_id = session.get('user_id', None)
+    if user_id is None:
+        return None
     # user_id = '599e598ec532091648c8079e'
     # print(user_id)
     u = User.find_by_id(user_id)  # str

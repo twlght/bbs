@@ -195,6 +195,17 @@ class Mongo(object):
         ms = cls.find_one_and_update(filter_form, {'deleted': True})
         return ms
 
+    @classmethod
+    def real_delete(cls, **filter_form):
+        # todo!!!
+        ms = cls.find_one_and_delete(filter_form)
+        return ms
+
+    @classmethod
+    def count(cls):
+        # todo
+        pass
+
     def update(self, **update_form):
         if hasattr(self, '_id'):
             return self.update_one({'_id': self._id}, update_form)
@@ -204,7 +215,9 @@ class Mongo(object):
     def save(self):
         # __init__出来还未储存的没有'_id"
         if hasattr(self, '_id'):
+            id = self.__dict__.pop('id')
             self.replace_one({'_id': self._id}, self.__dict__)
+            setattr(self, 'id', str(id))
         else:
             r = self.insert_one(self.__dict__)  # insert_one 参数是一个dict
             setattr(self, '_id', r.inserted_id)

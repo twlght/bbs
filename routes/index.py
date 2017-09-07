@@ -10,73 +10,53 @@ from flask import (
 )
 
 from models.user import User
+from models.topic import Topic
+from models.board import Board
 from utils import log, log2
 import uuid
 import os
 import config.config as config
+from config.config import topics_per_page
 from routes import current_user
 from bson.objectid import ObjectId
 
 main = Blueprint('index', __name__)
-
-
-"""
-用户在这里可以
-    访问首页
-    注册
-    登录
-
-用户登录后, 会写入 session, 并且定向到 /profile
-"""
+csrf_token = dict()
 
 
 @main.route("/")
 def index():
-    u = current_user()
-    return render_template("index.html", user=u)
-
-
-@main.route("/register", methods=['POST'])
-def register():
-    form = request.form
-    # 用类函数来判断
-    u = User.register(form)
-    return redirect(url_for('.index'))
-
-
-@main.route("/login", methods=['POST'])
-def login():
-    form = request.form  # dict
-    u = User.validate_login(form)
-    if u is None:
-        # 转到 topic.index 页面
-        return redirect(url_for('topic.index'))
+    board_id = request.args.get('board_id', '-1')
+    page = int(request.args.get('page', 1))
+    cur_user = current_user()
+    if board_id == '-1':
+        ts = Topic.all()
     else:
-        # session 中写入 user_id
-        session['user_id'] = u.id
-        log2(session)
-        # 设置 cookie 有效期为 永久
-        session.permanent = True
-        return redirect(url_for('topic.index'))
+        ts = Topic.find_all(board_id=board_id)
+    max_page = int(len(ts) / topics_per_page + 1)
+    if page > max_page:
+        return redirect(url_for('.index', page=max_page, board_id=board_id))
+    if page == max_page:
+        ts = ts[(page-1) * topics_per_page:]
+    else:
+        ts = ts[(page-1) * topics_per_page:page * topics_per_page]
+    token = str(uuid.uuid4())
+    csrf_token['token'] = token
+    bs = Board.all()
+    return render_template("index.html",
+                           page=page, max_page=max_page, ts=ts, token=token,
+                           bs=bs, board_id=board_id, cur_user=cur_user)
 
 
 @main.route('/user/<id>')  # 用id不重复
 def user_detail(id):
+    cur_user = current_user()
     u = User.find_by_id(id)
     if u is None:
         abort(404)
     else:
-        return render_template('profile.html', user=u)
-        # abort(404)
-
-
-@main.route('/profile')
-def profile():
-    u = current_user()
-    if u is None:
-        return redirect(url_for('.index'))
-    else:
-        return render_template('profile.html', user=u)
+        ts = u.topics()
+        return render_template('user_detail.html', cur_user=cur_user, user=u, ts=ts)
 
 
 @main.route('/add_img', methods=["POST"])

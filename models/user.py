@@ -1,4 +1,5 @@
 from models import Mongo as Model
+import os
 
 
 class User(Model):
@@ -11,7 +12,7 @@ class User(Model):
         # self.id = form.get('id', None)
         self.username = form.get('username', '')
         self.password = form.get('password', '')
-        self.filename = 'my_pc.jpg'
+        self.filename = form.get('filename', 'my_pc.jpg')
 
     def salted_password(self, password, salt='$!@><?>HUI&DWQa`'):
         import hashlib
@@ -51,11 +52,29 @@ class User(Model):
         else:
             return None
 
+    def topics(self):
+        from models.topic import Topic
+        ts = Topic.find_all(user_id=self.id)
+        return ts
+
+    @staticmethod
+    def generate_fake(count):
+        import forgery_py
+        from random import randint
+        img_list = os.listdir('../users_img')
+        for i in range(count):
+            form = dict(
+                username=forgery_py.internet.user_name(False),
+                password='123',
+            )
+            u = User(form)
+            u.filename = img_list[randint(0, len(img_list)-1)]
+            u.password = u.salted_password(u.password)
+            u.save()
+
 
 def tst():
-    r = User.find_one(username='qwe')
-    print(type(r.id))
-
-
+    # print(os.listdir('../users_img'))
+    User.generate_fake(10)
 if __name__ == '__main__':
     tst()

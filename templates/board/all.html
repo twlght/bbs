@@ -1,12 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>allboard</title>
-</head>
-<body>
-            {% for board in boards %}
-            <div>{{ board.board_name }}</div>
-            {% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block sidebar %}
+<div id='sidebar'>
+	<div class='panel'>
+        <div class='inner'>
+            <a href='/board/new' id='create_topic_btn'>
+				<span class='span-success'>新建板块</span>
+			</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content">
+    <div class="panel">
+        <div class="header">
+            <span>全部板块</span>
+
+        </div>
+		<div class="inner no-padding">
+			<div id="topic_list">
+				{% for board in boards %}
+				<div class="cell">
+					<div class="topic_title_wrapper">
+						<a class="topic_title" >
+							{{ board.board_name }}
+						</a>
+						<!--<span class="last_time pull-right last_active_time">2 小时前</span>-->
+							<!--删除-->
+						<!--</a>-->
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</div>
+</div>
+{% endblock %}
+
