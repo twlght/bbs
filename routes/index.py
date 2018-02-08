@@ -10,7 +10,7 @@ from flask import (
 )
 
 from models.user import User
-from models.topic import Topic
+from models.post import Post
 from models.board import Board
 from utils import log, log2
 import uuid
@@ -19,9 +19,10 @@ import config.config as config
 from config.config import topics_per_page
 from routes import current_user
 from bson.objectid import ObjectId
+import json
 
 main = Blueprint('index', __name__)
-csrf_token = dict()
+# csrf_token = dict()
 
 
 @main.route("/")
@@ -30,9 +31,9 @@ def index():
     page = int(request.args.get('page', 1))
     cur_user = current_user()
     if board_id == '-1':
-        ts = Topic.all()
+        ts = Post.all()
     else:
-        ts = Topic.find_all(board_id=board_id)
+        ts = Post.find_all(board_id=board_id)
     max_page = int(len(ts) / topics_per_page + 1)
     if page > max_page:
         return redirect(url_for('.index', page=max_page, board_id=board_id))
@@ -41,7 +42,7 @@ def index():
     else:
         ts = ts[(page-1) * topics_per_page:page * topics_per_page]
     token = str(uuid.uuid4())
-    csrf_token['token'] = token
+    session['token'] = token
     bs = Board.all()
     return render_template("index.html",
                            page=page, max_page=max_page, ts=ts, token=token,
@@ -83,3 +84,10 @@ def add_img():
 def upload(filename):
     return send_from_directory('users_img', filename)
 
+
+@main.route('/axios_test')
+def axios_test():
+    js = request.headers
+    print(js)
+    boards = ['python', 'linux', 'vue', 'mongodb', 'nginx']
+    return json.dumps(boards)

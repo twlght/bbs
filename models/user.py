@@ -1,20 +1,44 @@
-from models import Mongo as Model
-import os
+from app import db, jwt
+from flask_sqlalchemy import SQLAlchemy
+import datetime
+from flask_login import UserMixin
+from flask import url_for, session
 
 
-class User(Model):
-    """
-    User 是一个保存用户数据的 model
-    现在只有两个属性 username 和 password
-    """
-    def __init__(self, form):
-        super().__init__(form)
-        # self.id = form.get('id', None)
-        self.username = form.get('username', '')
-        self.password = form.get('password', '')
-        self.filename = form.get('filename', 'my_pc.jpg')
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(64), unique=True, index=True)
+    # password 不可读
+    password_hashed = db.Column(db.String(128))
+    is_admin = db.Column(db.Boolean, default=False, index=True)
+    location = db.Column(db.String(64))
+    about_me = db.Column(db.Text())
+    member_since = db.Column(db.DateTime, default=datetime.date.today())
+    posts = db.relationship('Post', backref='author', lazy='dynamic')  # 给Post一个author属性
 
-    def salted_password(self, password, salt='$!@><?>HUI&DWQa`'):
+    def to_json(self):
+        json_user = {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'location': self.location,
+            'about_me': self.about_me,
+            'member_since': self.member_since.isoformat(),
+        }
+        return json_user
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hashed = self.hash_password(password)
+
+    @staticmethod
+    def hash_password(password, salt='$!@><?>HUI&DWQa`'):
         import hashlib
 
         def sha256(ascii_str):
@@ -23,58 +47,83 @@ class User(Model):
         hash2 = sha256(hash1 + salt)
         return hash2
 
-    def hashed_password(self, pwd):
-        import hashlib
-        # 用 ascii 编码转换成 bytes 对象
-        p = pwd.encode('ascii')
-        s = hashlib.sha256(p)
-        # 返回摘要字符串
-        return s.hexdigest()
+    def verify_password(self, password):
+        if self.password_hashed == self.hash_password(password):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def validate_form(form):
+        return True
 
     @classmethod
     def register(cls, form):
-        name = form.get('username', '')
-        pwd = form.get('password', '')
-        if len(name) > 2 and User.find_one(username=name) is None:
-            u = User.new(form)
-            u.password = u.salted_password(pwd)
-            u.save()
-            return u
-        else:
-            return None
-
-    @classmethod
-    def validate_login(cls, form):
-        u = User(form)
-        user = User.find_one(username=u.username)
-        if user is not None and user.password == u.salted_password(u.password):
+        if cls.validate_form(form):
+            user = User(username=form['username'],
+                        email=form['email'],
+                        password=form['password'])
+            db.session.add(user)
+            db.session.commit()
+            print('register a user: {}'.format(user))
             return user
-        else:
-            return None
-
-    def topics(self):
-        from models.topic import Topic
-        ts = Topic.find_all(user_id=self.id)
-        return ts
 
     @staticmethod
-    def generate_fake(count):
+    def generate_fake(count=10):
+        from sqlalchemy.exc import IntegrityError
+        from random import seed
         import forgery_py
-        from random import randint
-        img_list = os.listdir('../users_img')
+
+        seed()
         for i in range(count):
-            form = dict(
-                username=forgery_py.internet.user_name(False),
-                password='123',
-            )
-            u = User(form)
-            u.filename = img_list[randint(0, len(img_list)-1)]
-            u.password = u.salted_password(u.password)
-            u.save()
+            if i == 0:
+                user = User(
+                    username='admin',
+                    email=forgery_py.internet.email_address(),
+                    password='123',
+                    is_admin=True,
+                    location=forgery_py.address.city(),
+                    about_me=forgery_py.lorem_ipsum.sentence(),
+                    member_since=forgery_py.date.date(True))
+            else:
+                user = User(
+                    username=forgery_py.internet.user_name(True),
+                    email=forgery_py.internet.email_address(),
+                    password='123',
+                    is_admin=False,
+                    location=forgery_py.address.city(),
+                    about_me=forgery_py.lorem_ipsum.sentence(),
+                    member_since=forgery_py.date.date(True))
+            db.session.add(user)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+
+    def __repr__(self):
+        return '<User: {}>'.format(self.username)
 
 
-def tst():
-    # print(os.listdir('../users_img'))
+def main():
+    from flask import Flask, current_app
+    from models.board import Board
+    from models.post import Post
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = \
+        'postgresql://postgres:root@127.0.0.1:5432/bbsdb'
+    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    # 需要应用上下文
+    app_ctx = app.app_context()
+    app_ctx.push()
+    # db.init_app(app)
+    db.init_app(current_app)
+    # db.create_all()
+    # create_all之前要执行所有class(Board, User, Post) 然后生成空的table
     User.generate_fake(10)
+    ls = User.query.all()  # list
+    print(ls)
+
+
 if __name__ == '__main__':
-    tst()
+    main()

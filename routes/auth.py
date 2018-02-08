@@ -40,7 +40,7 @@ def login():
         else:
             # session 中写入 user_id
             session['user_id'] = u.id
-            log2(session)
+            # log2(session)
             # 设置 cookie 有效期为 永久
             session.permanent = True
             return redirect(url_for('index.index'))

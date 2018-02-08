@@ -6,7 +6,7 @@ from os.path import dirname
 import app
 
 
-sys.path.insert(0, abspath(dirname(__file__)))
+sys.path.insert(0, abspath(dirname(__file__)))  # Apache
 application = app.configured_app()
 
 """

@@ -1,9 +1,9 @@
 server {
     listen 80;
     location / {
-        proxy_pass http://localhost:2002;
+        proxy_pass http://localhost:2000;
     }
-    location /uploads {
+    location /upload {
         alias /var/www/bbs/uploads;
     }
 }
