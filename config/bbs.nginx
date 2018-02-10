@@ -3,7 +3,4 @@ server {
     location / {
         proxy_pass http://localhost:2000;
     }
-    location /upload {
-        alias /var/www/bbs/uploads;
-    }
 }
