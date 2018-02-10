@@ -2,6 +2,7 @@ from flask import Flask
 from config import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT, jwt_required, current_identity, CONFIG_DEFAULTS
+from config.config import database_uri
 # current_identity: LocalProxy 本地代理, 返回req_ctx_stack.top中的identity
 # 经过下面的函数定义, current_identity是个user实例
 
@@ -33,8 +34,7 @@ def register_routes(app):
 
 
 def configure_db(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'postgresql://postgres:root@127.0.0.1:5432/bbsdb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db.init_app(app)

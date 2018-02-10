@@ -1,6 +1,10 @@
 from flask import url_for
 from app import db
+from config.config import database_uri
 import datetime
+import sys
+import platform
+print('\n'.join(sys.path))
 
 
 class Post(db.Model):
@@ -63,8 +67,7 @@ def main():
     from models.board import Board
     from models.user import User
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'postgresql://postgres:root@127.0.0.1:5432/bbsdb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     # 需要应用上下文
