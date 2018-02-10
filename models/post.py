@@ -2,9 +2,6 @@ from flask import url_for
 from app import db
 from config.config import database_uri
 import datetime
-import sys
-import platform
-print('\n'.join(sys.path))
 
 
 class Post(db.Model):
@@ -93,4 +90,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    pass
