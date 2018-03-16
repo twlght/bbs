@@ -72,7 +72,8 @@ def get_posts():
     if param == 'all':
         posts = Post.query.order_by(Post.timestamp.desc()).all()  # 倒序 desc()
     else:
-        posts = Post.query.filter_by(board_id=int(param)).order_by(Post.timestamp.desc()).all()
+        cur_board = Board.query.filter_by(name=param)
+        posts = Post.query.filter_by(board_id=cur_board.id).order_by(Post.timestamp.desc()).all()
     return jsonify([post.to_json() for post in posts])
 
 
