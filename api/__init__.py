@@ -72,7 +72,8 @@ def get_posts():
     if param == 'all':
         posts = Post.query.order_by(Post.timestamp.desc()).all()  # 倒序 desc()
     else:
-        cur_board = Board.query.filter_by(name=param)
+        cur_board = Board.query.filter_by(name=param).first()
+        # print(cur_board)
         # 前端axios查询board的方式由board.id改为board.name, 后端做相应适配修改
         posts = Post.query.filter_by(board_id=cur_board.id).order_by(Post.timestamp.desc()).all()
     return jsonify([post.to_json() for post in posts])
