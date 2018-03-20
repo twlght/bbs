@@ -16,16 +16,20 @@ class User(db.Model):
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime, default=datetime.date.today())
+    # posts 是个query, 不是查询之后的结果 可以用for循环迭代出来.
     posts = db.relationship('Post', backref='author', lazy='dynamic')  # 给Post一个author属性
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')  # 给Comment一个author属性
 
+    # to_json(), 将实例转化为json, 实际上是先变成dict返回, 在路由函数中jsonify
     def to_json(self):
         json_user = {
             'id': self.id,
             'username': self.username,
             'email': self.email,
             'location': self.location,
-            'about_me': self.about_me,
+            'quote': self.about_me,
             'member_since': self.member_since.isoformat(),
+            'posts': [post.to_json() for post in self.posts]
         }
         return json_user
 
@@ -105,24 +109,7 @@ class User(db.Model):
 
 
 def main():
-    from flask import Flask, current_app
-    from models.board import Board
-    from models.post import Post
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'postgresql://postgres:root@127.0.0.1:5432/bbsdb'
-    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    # 需要应用上下文
-    app_ctx = app.app_context()
-    app_ctx.push()
-    # db.init_app(app)
-    db.init_app(current_app)
-    # db.create_all()
-    # create_all之前要执行所有class(Board, User, Post) 然后生成空的table
-    User.generate_fake(10)
-    ls = User.query.all()  # list
-    print(ls)
+    pass
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ from flask import (
 
 from routes import *  # 导入__init__.py
 
-from models.reply import Reply
+from models.comment import Reply
 from utils import log, log2
 
 

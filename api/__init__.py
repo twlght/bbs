@@ -13,6 +13,8 @@ from flask import (
 from models.user import User
 from models.post import Post
 from models.board import Board
+from models.comment import Comment
+
 
 main = Blueprint('api', __name__)
 """
@@ -61,31 +63,36 @@ def get_users():
     return jsonify([user.to_json() for user in users])
 
 
-@main.route('/users/<int:id>')
-def get_user():
-    pass
+@main.route('/user/<int:id>')
+def get_user(id):
+    user = User.query.filter_by(id=id).first()
+    return jsonify(user.to_json())
 
 
+# ?board=xxx or ?user_id=xxx
 @main.route('/posts')
 def get_posts():
-    param = request.args.get('board')
-    if param == 'all':
-        posts = Post.query.order_by(Post.timestamp.desc()).all()  # 倒序 desc()
-    else:
-        cur_board = Board.query.filter_by(name=param).first()
-        # print(cur_board)
-        # 前端axios查询board的方式由board.id改为board.name, 后端做相应适配修改
-        posts = Post.query.filter_by(board_id=cur_board.id).order_by(Post.timestamp.desc()).all()
-    return jsonify([post.to_json() for post in posts])
+    board_name = request.args.get('board', None)
+    user_id = request.args.get('user_id', None)
+    if board_name:
+        if board_name == 'all':
+            posts = Post.query.order_by(Post.timestamp.desc()).all()  # 倒序 desc()
+        else:
+            cur_board = Board.query.filter_by(name=board_name).first()
+            # print(cur_board)
+            # 前端axios查询board的方式由board.id改为board.name, 后端做相应适配修改
+            posts = Post.query.filter_by(board_id=cur_board.id).order_by(Post.timestamp.desc()).all()
+        return jsonify([post.to_json() for post in posts])
+    if user_id:
+        posts = Post.query.filter_by(author_id=int(user_id)).order_by(Post.timestamp.desc()).all()
+        return jsonify([post.to_json() for post in posts])
 
 
 @main.route('/post/<int:id>')
-def get_post():
-    param = request.args.get('board')
-    if param == 'all':
-        posts = Post.query.all()
-        return jsonify(posts)
-    pass
+def get_post(id):
+    # id = request.args.get('id')
+    post = Post.query.filter_by(id=int(id)).first()
+    return jsonify(post.to_json())
 
 
 @main.route('/register', methods=['POST'])
