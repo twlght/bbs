@@ -2,6 +2,8 @@ from flask import url_for
 from app import db
 from config.config import database_uri
 import datetime
+from flask_jwt import jwt_required, current_identity
+from sqlalchemy.exc import IntegrityError
 
 
 class Post(db.Model):
@@ -34,6 +36,21 @@ class Post(db.Model):
             'comments': [comment.to_json() for comment in self.comments],
         }
         return json_post
+
+    @classmethod
+    def generate_post(cls, form):
+        post = Post(title=form['title'],
+                    board_id=form['boardId'],
+                    body=form['content'],
+                    author_id=current_identity.id,
+                    )
+        db.session.add(post)
+        try:
+            db.session.commit()
+            print('generated a post: {}, id: {}'.format(post, post.id))
+        except IntegrityError:
+            db.session.rollback()
+        return post
 
     @staticmethod
     def generate_fake(count=10):

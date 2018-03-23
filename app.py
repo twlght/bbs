@@ -3,6 +3,7 @@ from config import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT, jwt_required, current_identity, CONFIG_DEFAULTS
 from config.config import database_uri
+from datetime import timedelta
 # current_identity: LocalProxy 本地代理, 返回req_ctx_stack.top中的identity
 # 经过下面的函数定义, current_identity是个user实例
 
@@ -54,9 +55,11 @@ def configure_jwt(app):
     @jwt.identity_handler
     def identity(payload):
         user_id = payload.get('identity', None)
+        print('user_id: {}'.format(user_id))
         return User.query.filter_by(id=user_id).first()
 
     CONFIG_DEFAULTS['JWT_AUTH_URL_RULE'] = '/login'
+    # CONFIG_DEFAULTS['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3000),  # 过期时间 3000s
     jwt.init_app(app)
 
 

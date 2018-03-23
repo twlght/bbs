@@ -10,6 +10,7 @@ from flask import (
     send_from_directory,
     jsonify,
 )
+from flask_jwt import jwt_required, current_identity
 from models.user import User
 from models.post import Post
 from models.board import Board
@@ -41,16 +42,6 @@ api:
 """
 
 
-def current_user():
-    user_id = session.get('user_id', None)
-    if user_id is None:
-        return None
-    # user_id = '599e598ec532091648c8079e'
-    # print(user_id)
-    u = User.query.filter_by(id=user_id)
-    return u
-
-
 @main.route('/boards')
 def get_boards():
     boards = Board.query.all()
@@ -70,7 +61,7 @@ def get_user(id):
 
 
 # ?board=xxx or ?user_id=xxx
-@main.route('/posts')
+@main.route('/posts', methods=['GET'])
 def get_posts():
     board_name = request.args.get('board', None)
     user_id = request.args.get('user_id', None)
@@ -86,6 +77,18 @@ def get_posts():
     if user_id:
         posts = Post.query.filter_by(author_id=int(user_id)).order_by(Post.timestamp.desc()).all()
         return jsonify([post.to_json() for post in posts])
+
+
+@main.route('/posts', methods=['POST'])
+@jwt_required()
+def post_post():
+    print('request headers: {}'.format(request.headers))
+    # current_user = current_identity
+    print('current_identity: ', current_identity)
+    req_json = request.json
+    print('req_json:', req_json)  # dict
+    post = Post.generate_post(req_json)
+    return jsonify(post.to_json())
 
 
 @main.route('/post/<int:id>')
