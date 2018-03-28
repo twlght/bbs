@@ -54,10 +54,18 @@ def get_users():
     return jsonify([user.to_json() for user in users])
 
 
-@main.route('/user/<int:id>')
-def get_user(id):
-    user = User.query.filter_by(id=id).first()
-    return jsonify(user.to_json())
+@main.route('/user/<params>')
+def get_user_by_id(params):
+    print('params: {}'.format(params))
+    print('type: {}'.format(type(params)))
+    if params.isdigit():
+        id = int(params)
+        user = User.query.filter_by(id=id).first()
+        return jsonify(user.to_json())
+    else:
+        username = params
+        user = User.query.filter_by(username=username).first()
+        return jsonify(user.to_json())
 
 
 # ?board=xxx or ?user_id=xxx

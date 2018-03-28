@@ -10,6 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
+    profile_photo = db.Column(db.String(128))
     # password 不可读
     password_hashed = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean, default=False, index=True)
@@ -88,7 +89,8 @@ class User(db.Model):
                     is_admin=True,
                     location=forgery_py.address.city(),
                     about_me=forgery_py.lorem_ipsum.sentence(),
-                    member_since=forgery_py.date.date(True))
+                    member_since=forgery_py.date.date(True),
+                    profile_photo='{}.jpg'.format(i))
             else:
                 user = User(
                     username=forgery_py.internet.user_name(True),
@@ -97,7 +99,8 @@ class User(db.Model):
                     is_admin=False,
                     location=forgery_py.address.city(),
                     about_me=forgery_py.lorem_ipsum.sentence(),
-                    member_since=forgery_py.date.date(True))
+                    member_since=forgery_py.date.date(True),
+                    profile_photo='{}.jpg'.format(i))
             db.session.add(user)
             try:
                 db.session.commit()

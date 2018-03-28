@@ -3,4 +3,8 @@ server {
     location / {
         proxy_pass http://localhost:2000;
     }
+    location /images/ {
+        root /images/;
+        autoindex on;
+    }
 }
