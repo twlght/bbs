@@ -4,7 +4,7 @@ server {
         proxy_pass http://localhost:2000;
     }
     location /images/ {
-        root /images/;
+        root /;
         autoindex on;
     }
 }
