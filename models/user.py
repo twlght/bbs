@@ -30,7 +30,8 @@ class User(db.Model):
             'location': self.location,
             'quote': self.about_me,
             'member_since': self.member_since.isoformat(),
-            'posts': [post.to_json() for post in self.posts]
+            'posts': [post.to_json() for post in self.posts],
+            'profilePhoto': self.profile_photo
         }
         return json_user
 
