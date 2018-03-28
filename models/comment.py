@@ -22,6 +22,7 @@ class Comment(db.Model):
             'body': self.body,
             'timestamp': self.timestamp.date().isoformat(),
             'author': self.author.username,
+            'profilePhoto': self.author.profile_photo,
             # 'author_url': url_for('api.get_user', id=self.author_id, _external=True),
             'authorURL': '/user/{}'.format(self.author_id),
             # 'authorId': self.author_id,
