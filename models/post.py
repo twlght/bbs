@@ -29,6 +29,7 @@ class Post(db.Model):
             'author': self.author.username,
             # 'author_url': url_for('api.get_user', id=self.author_id, _external=True),
             'authorURL': '/user/{}'.format(self.author_id),
+            'profilePhoto': self.author.profile_photo,
             'authorId': self.author_id,
             'views': self.views,
             'board': self.board.name,
