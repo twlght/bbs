@@ -12,7 +12,7 @@ server {
     location ^~ /images/ {
         # 匹配所有以 /images/ 开头的表达式，如果匹配成功，则停止匹配查找。
         # 所以，即便有符合的正则表达式location，也不会被使用
-        root /www/images/;
+        root /www/;
         # autoindex on;
     }
     location ^~ /static/ {
