@@ -15,7 +15,7 @@ server {
         root /www/static/;
         # autoindex on;
     }
-    location = / {
+    location = /index.html {
         root /www/;
     }
     location / {  # 注意 / 会匹配所有的url地址
