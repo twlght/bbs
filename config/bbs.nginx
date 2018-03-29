@@ -16,7 +16,8 @@ server {
         # autoindex on;
     }
     location = / {
-
+        root /www/static/;
+        index index.html;
     }
     location / {  # 注意 / 会匹配所有的url地址
         try_files $uri $uri/ /index.html;
