@@ -25,13 +25,14 @@ def register_routes(app):
     # from routes.board import main as board_routes
     # from routes.auth import main as auth_routes
     from api import main as api_routes  # 从这里导入models
+    from auth import main as auth_routes
 
     # app.register_blueprint(index_routes)
+    app.register_blueprint(auth_routes)
     app.register_blueprint(api_routes, url_prefix='/api')
     # app.register_blueprint(post_routes, url_prefix='/post')
     # app.register_blueprint(reply_routes, url_prefix='/reply')
     # app.register_blueprint(board_routes, url_prefix='/board')
-    # app.register_blueprint(auth_routes)
 
 
 def configure_db(app):

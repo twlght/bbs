@@ -32,11 +32,7 @@ api:
 /boards: 所有版块名及信息;
 
 /posts: 所有文章;
-/posts/<str: id>: 一篇文章;
-/posts/<str: id>/comments: 一篇文章的所有评论;
 
-/reply: 所有评论;
-/reply/<str: id>: 一条评论;
 
 
 """
@@ -106,20 +102,7 @@ def get_post(id):
     return jsonify(post.to_json())
 
 
-@main.route('/register', methods=['POST'])
-def register():
-    req_json = request.json
-    print('req_json:', req_json)  # dict
-    user = User.register(req_json)
-    return jsonify(user.to_json())
 
-
-# '/login' 由 flask_jwt 定义
-
-
-@main.route('/logout')
-def logout():
-    pass
 
 
 
