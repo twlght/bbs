@@ -15,6 +15,9 @@ server {
         root /www/static/;
         # autoindex on;
     }
+    location ^~ /static/ {
+        alias /www/static/;
+    }
     location = /index.html {
         root /www/;
     }
