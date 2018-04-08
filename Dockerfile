@@ -13,7 +13,8 @@ RUN pip3 install gunicorn
 # Build folder
 RUN mkdir -p /bbs/bbs_app
 
-WORKDIR /bbs
+WORKDIR /bbs/bbs_app
+RUN ls -la
 # 在bbs文件夹下建立virtualenv(bbs-venv)
 # RUN python3 -m venv bbs-venv
 # RUN ls bbs-venv
