@@ -6,6 +6,7 @@ MAINTAINER twlght
 
 RUN apt-get update
 RUN apt-get install -y python3 python3-venv nginx supervisor
+RUN apt-get install -y python3-pip
 RUN pip3 install setuptools
 RUN pip3 install gunicorn
 
