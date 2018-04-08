@@ -1,0 +1,27 @@
+server {
+    listen 80;
+    location ^~ /api {
+        proxy_pass http://localhost:2000;
+    }
+    location ^~ /login {
+        proxy_pass http://localhost:2000;
+    }
+    location ^~ /register {
+        proxy_pass http://localhost:2000;
+    }
+    location ^~ /images/ {
+        # 匹配所有以 /images/ 开头的表达式，如果匹配成功，则停止匹配查找。
+        # 所以，即便有符合的正则表达式location，也不会被使用
+        root /www/;
+        # autoindex on;
+    }
+    location ^~ /static/ {
+        alias /www/static/;
+    }
+    location = /index.html {
+        root /www/;
+    }
+    location / {  # 注意 / 会匹配所有的url地址
+        try_files $uri $uri/ /index.html;
+    }
+}
