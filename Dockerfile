@@ -16,9 +16,9 @@ RUN mkdir -p /bbs/bbs_app
 WORKDIR /bbs
 # 在bbs文件夹下建立virtualenv(bbs-venv)
 RUN python3 -m venv bbs-venv
-RUN ls -la
 # 进入虚拟环境
-RUN source bbs-venv/bin/activate
+# bbs-venv 没有在环境变量中
+RUN source ./bbs-venv/bin/activate
 
 # only copy requirements.txt.  othors will be mounted by -v
 # COPY bbs_app/requirements.txt /bbs/bbs_app/requirements.txt
