@@ -5,7 +5,7 @@ FROM ubuntu:16.04
 MAINTAINER twlght
 
 RUN apt-get update
-RUN apt-get install -y python3 python3-venv nginx supervisor
+RUN apt-get install -y python3 python3-venv nginx supervisor zsh
 RUN apt-get install -y python3-pip
 RUN pip3 install setuptools
 RUN pip3 install gunicorn
@@ -13,14 +13,14 @@ RUN pip3 install gunicorn
 # Build folder
 RUN mkdir -p /bbs/bbs_app
 
-WORKDIR /bbs/bbs_app
+WORKDIR /bbs
 RUN ls -la
 # 在bbs文件夹下建立virtualenv(bbs-venv)
-# RUN python3 -m venv bbs-venv
-# RUN ls bbs-venv
+RUN python3 -m venv bbs-venv
+RUN ls bbs
 # 进入虚拟环境
 # bbs-venv 没有在环境变量中
-# RUN . bbs-venv/bin/activate
+RUN source bbs-venv/bin/activate
 
 # only copy requirements.txt.  othors will be mounted by -v
 # COPY bbs_app/requirements.txt /bbs/bbs_app/requirements.txt

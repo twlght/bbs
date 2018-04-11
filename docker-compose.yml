@@ -15,7 +15,7 @@ services:
     stdin_open: true
     tty: true
     build:
-      context: ./
+      context: .
       dockerfile: ./Dockerfile
     volumes:
       - ./bbs_app:/bbs/bbs_app
