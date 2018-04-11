@@ -24,5 +24,6 @@ services:
       # - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     ports:
       - "8080:80"
+      # 对外端口80, 映射到宿主机的8080
     #command: '/bin/bash'
     command: '/usr/bin/supervisord'
