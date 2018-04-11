@@ -14,10 +14,12 @@ RUN pip3 install gunicorn
 RUN mkdir -p /bbs/bbs_app
 
 WORKDIR /bbs
-RUN ls -la
+RUN ls -l /bin/sh
+RUN dpkg-reconfigure dash
+RUN ls -l /bin/sh
 # 在bbs文件夹下建立virtualenv(bbs-venv)
 RUN python3 -m venv bbs-venv
-RUN ls -la
+RUN ls -l
 # 进入虚拟环境
 # bbs-venv 没有在环境变量中
 RUN source bbs-venv/bin/activate
