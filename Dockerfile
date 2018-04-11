@@ -36,7 +36,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # 配置 supervisor
 RUN mkdir -p /var/log/supervisor
-COPY bbs.conf /etc/supervisor/conf.d/supervisor.conf
+COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 # Start processes
 CMD ["/usr/bin/supervisord"]
