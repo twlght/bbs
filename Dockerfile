@@ -15,7 +15,7 @@ RUN mkdir -p /bbs/bbs_app
 
 WORKDIR /bbs
 RUN ls -l /bin/sh
-RUN dpkg-reconfigure dash
+RUN dpkg-reconfigure dash -n
 RUN ls -l /bin/sh
 # 在bbs文件夹下建立virtualenv(bbs-venv)
 RUN python3 -m venv bbs-venv
