@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: bbsdb
     volumes:
-      - /var/lib/postgresql/9.5/main:/var/lib/postgresql/docker-data
+      - /var/lib/postgresql/9.5/main:/db/data
 
   api:
     #restart: always
