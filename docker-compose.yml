@@ -7,8 +7,14 @@ services:
     environment:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: bbsdb
-    volumes:
-      - /var/lib/postgresql/9.5/main:/db/data
+#    volumes:
+#      - /var/lib/postgresql/9.5/main:/db/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8081
 
   api:
     #restart: always
