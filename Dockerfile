@@ -22,7 +22,7 @@ RUN ls -l
 # 进入虚拟环境
 # bbs-venv 没有在环境变量中
 # RUN source bbs-venv/bin/activate
-RUN ["/bin/bash" "-c" "source bbs-venv/bin/activate"]
+RUN ["/bin/bash", "-c", "source bbs-venv/bin/activate"]
 
 # only copy requirements.txt.  othors will be mounted by -v
 # COPY bbs_app/requirements.txt /bbs/bbs_app/requirements.txt
