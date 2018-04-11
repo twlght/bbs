@@ -23,7 +23,7 @@ RUN ls -la
 RUN ["/bin/bash", "-c", "source bbs-venv/bin/activate"]
 
 # only copy requirements.txt.  othors will be mounted by -v
-# COPY bbs_app/requirements.txt /bbs/bbs_app/requirements.txt
+COPY bbs_app/requirements.txt /bbs/bbs_app/requirements.txt
 # 安装python包
 RUN ls -l /bbs/bbs_app/
 RUN pip3 install -r /bbs/bbs_app/requirements.txt
