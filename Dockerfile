@@ -5,7 +5,7 @@ FROM ubuntu:16.04
 MAINTAINER twlght
 
 RUN apt-get update
-RUN apt-get install -y python3 python3-venv nginx supervisor zsh
+RUN apt-get install -y python3.5 python3-venv nginx supervisor zsh
 RUN apt-get install -y python3-pip
 RUN pip3 install setuptools
 RUN pip3 install gunicorn
@@ -15,12 +15,12 @@ RUN mkdir -p /bbs/bbs_app
 
 WORKDIR /bbs
 # 在bbs文件夹下建立virtualenv(bbs-venv)
-RUN python3 -m venv bbs-venv
-RUN ls -la
+# RUN python3 -m venv bbs-venv
+# RUN ls -la
 # 进入虚拟环境
 # bbs-venv 没有在环境变量中
 # RUN source bbs-venv/bin/activate
-RUN ["/bin/bash", "-c", "source bbs-venv/bin/activate"]
+# RUN ["/bin/bash", "-c", "source bbs-venv/bin/activate"]
 
 # only copy requirements.txt.  othors will be mounted by -v
 COPY bbs_app/requirements.txt /bbs/bbs_app/requirements.txt
@@ -39,6 +39,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # 通过supervisorctl来管理使用supervisor启动和管理的自身的一些应用，如我们的这里的app.py
 RUN mkdir -p /var/log/supervisor
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/bbs.pth
 
 # Start processes
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
