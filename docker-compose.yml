@@ -31,6 +31,6 @@ services:
       # - ./gunicorn.conf:/etc/supervisor/conf.d/gunicorn.conf
       # - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     ports:
-      - "8080:80"
+      - "80:80"
       # 对外端口80, 映射到宿主机的8080
-      - "2020:2000"
+      - "2000:2000"
