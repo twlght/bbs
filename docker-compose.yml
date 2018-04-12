@@ -29,4 +29,5 @@ services:
       # - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     ports:
       - "80:80"
+      - "2000:2000"
       # 对外端口80, 映射到宿主机的8080
