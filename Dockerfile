@@ -41,4 +41,4 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 # Start processes
-CMD ["/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
