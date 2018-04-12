@@ -1,21 +1,21 @@
 version: "2"
 
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: root
-      # POSTGRES_DB: bbsdb
-      # PGDATA : /var/lib/postgresql/data/pgdata
-    # volumes:
-      # - /var/lib/postgresql/9.5/main:/var/lib/postgresql/data/pgdata
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8081:8081
+#  db:
+#    image: postgres
+#    restart: always
+#    environment:
+#      POSTGRES_PASSWORD: root
+#      # POSTGRES_DB: bbsdb
+#      # PGDATA : /var/lib/postgresql/data/pgdata
+#    # volumes:
+#      # - /var/lib/postgresql/9.5/main:/var/lib/postgresql/data/pgdata
+#
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - 8081:8081
 
   api:
     #restart: always
