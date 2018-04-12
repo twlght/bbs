@@ -6,9 +6,10 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: root
-#      POSTGRES_DB: bbsdb
-#    volumes:
-#      - /var/lib/postgresql/9.5/main:/db/data
+      # POSTGRES_DB: bbsdb
+      # PGDATA : /var/lib/postgresql/data/pgdata
+    # volumes:
+      # - /var/lib/postgresql/9.5/main:/var/lib/postgresql/data/pgdata
 
   adminer:
     image: adminer
