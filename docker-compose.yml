@@ -35,4 +35,4 @@ services:
       # 对外端口80, 映射到宿主机的8080
       - "2020:2000"
     #command: '/bin/bash'
-    command: '/usr/bin/supervisord'
+    # command: '/usr/bin/supervisord'
