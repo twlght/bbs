@@ -35,8 +35,10 @@ RUN ln -s /etc/nginx/sites-available/bbs.nginx /etc/nginx/sites-enabled/bbs.ngin
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # 配置 supervisor
+# 通过supervisord管理启动和配置supervisor本身，
+# 通过supervisorctl来管理使用supervisor启动和管理的自身的一些应用，如我们的这里的app.py
 RUN mkdir -p /var/log/supervisor
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 # Start processes
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor.conf"]
