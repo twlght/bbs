@@ -17,7 +17,7 @@ services:
   api:
     #restart: always
     stdin_open: true
-    tty: true
+    # tty: true
     build:
       context: .
       dockerfile: ./Dockerfile
