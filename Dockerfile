@@ -6,7 +6,7 @@ MAINTAINER twlght
 
 RUN apt-get update
 RUN apt-get install -y python3.5
-RUN apt-get install python3-venv nginx supervisor zsh
+RUN apt-get install -y python3-venv nginx supervisor zsh
 RUN apt-get install -y python3-pip
 RUN pip3 install setuptools
 RUN pip3 install gunicorn
