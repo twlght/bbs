@@ -1,18 +1,18 @@
 version: "2"
 
 services:
-  db:
-    image: postgres:9.5
-    # restart: always
-    environment:
-      POSTGRES_PASSWORD: root
+#  db:
+#    image: postgres:9.5
+#    # restart: always
+#    environment:
+#      POSTGRES_PASSWORD: root
 
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8081:8081"
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - "8081:8081"
 
   api:
     #restart: always
