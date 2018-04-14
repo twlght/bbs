@@ -5,6 +5,7 @@ FROM ubuntu:16.04
 MAINTAINER twlght
 
 RUN apt-get update
+RUN apt-get install -y vim
 RUN apt-get install -y python3.5
 RUN apt-get install -y python3-venv nginx supervisor zsh
 RUN apt-get install -y python3-pip
@@ -39,6 +40,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # 通过supervisord管理启动和配置supervisor本身，
 # 通过supervisorctl来管理使用supervisor启动和管理的自身的一些应用，如我们的这里的app.py
 RUN mkdir -p /var/log/supervisor
+RUN echo_supervisord_conf > /etc/supervisord.conf
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/bbs.pth
 
