@@ -25,7 +25,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    links: db
+    links:
+     - db
     volumes:
       - ../www:/www
       # - ./nginx_flask.conf:/etc/nginx/sites-available/nginx_flask.conf
