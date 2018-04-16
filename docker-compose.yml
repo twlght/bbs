@@ -4,6 +4,8 @@ services:
   db:
     image: postgres:alpine
     # restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: root
       PGDATA: /var/lib/postgresql/data/bbs-data
