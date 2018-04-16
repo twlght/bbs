@@ -47,4 +47,4 @@ COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/bbs.pth
 
 # Start processes
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
