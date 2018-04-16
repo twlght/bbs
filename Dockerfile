@@ -42,7 +42,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # 通过supervisord管理启动和配置supervisor本身，
 # 通过supervisorctl来管理使用supervisor启动和管理的自身的一些应用，如我们的这里的app.py
 RUN mkdir -p /var/log/supervisor
-RUN echo_supervisord_conf > /etc/supervisord.conf
+# RUN echo_supervisord_conf > /etc/supervisord.conf
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/bbs.pth
 
