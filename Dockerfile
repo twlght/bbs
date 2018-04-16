@@ -11,6 +11,7 @@ RUN apt-get install -y nginx
 RUN apt-get install -y supervisor
 RUN apt-get install -y python3-pip
 RUN apt-get install -y vim
+RUN apt-get install -y curl
 RUN pip3 install setuptools
 RUN pip3 install gunicorn
 # RUN pip3 install supervisor
