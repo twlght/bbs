@@ -13,7 +13,7 @@ RUN apt-get install -y python3-pip
 RUN apt-get install -y vim
 RUN apt-get install -y curl
 RUN pip3 install setuptools
-RUN pip3 install gunicorn
+# RUN pip3 install gunicorn
 # RUN pip3 install supervisor
 # Build folder
 RUN mkdir -p /bbs/bbs_app
