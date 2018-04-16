@@ -45,7 +45,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN mkdir -p /var/log/supervisor
 # RUN echo_supervisord_conf > /etc/supervisord.conf
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/bbs.pth
+RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/dist-packages/bbs.pth
 
 # Start processes
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
