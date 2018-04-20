@@ -56,8 +56,8 @@ class Post(db.Model):
     @staticmethod
     def generate_fake(count=10):
         from sqlalchemy.exc import IntegrityError
-        from application.models import User
-        from application.models.board import Board
+        from models.user import User
+        from models.board import Board
         from random import seed, randint
         import forgery_py
         seed()
