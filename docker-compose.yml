@@ -17,6 +17,7 @@ services:
     restart: always
     ports:
       - "8081:8080"
+      # 用浏览器访问8081端口
 
   api:
     #restart: always
