@@ -6,7 +6,7 @@ from flask import (
 from flask_jwt import jwt_required, current_identity
 from models.post import Post
 from models.user import User
-
+from models.comment import Comment
 from models.board import Board
 from utils import log
 
@@ -35,7 +35,7 @@ api:
 def get_boards():
     boards = Board.query.all()
     log('mark1')
-    return jsonify([board.to_json() for board in boards]+[{'id': 9, 'name': 'test'}])
+    return jsonify([board.to_json() for board in boards])
     # return jsonify([{
     #         'id': 1,
     #         'name': 'test',
