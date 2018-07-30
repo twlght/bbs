@@ -6,11 +6,10 @@ MAINTAINER twlght
 
 RUN apt-get update
 RUN apt-get install -y python3.5
-RUN ls -la
 RUN apt-get install -y python3-venv
 RUN apt-get install -y nginx
 RUN apt-get install -y supervisor
-RUN apt-get install -y python3-pip
+RUN apt install -y python3-pip
 RUN apt-get install -y vim
 RUN apt-get install -y curl
 RUN pip3 install setuptools
@@ -31,6 +30,7 @@ WORKDIR /bbs
 # only copy requirements.txt.  othors will be mounted by -v
 COPY bbs_app /bbs/bbs_app
 # 安装python包
+RUN ls -la /root/
 RUN ls -l /bbs/bbs_app/
 RUN pip3 install -r /bbs/bbs_app/requirements.txt
 
