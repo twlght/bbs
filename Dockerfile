@@ -6,6 +6,7 @@ MAINTAINER twlght
 
 RUN apt-get update
 RUN apt-get install -y python3.5
+RUN ls -la
 RUN apt-get install -y python3-venv
 RUN apt-get install -y nginx
 RUN apt-get install -y supervisor
