@@ -5,7 +5,7 @@ services:
     image: postgres:alpine
     restart: always
     ports:
-      - "5432:5432"
+      - "5431:5432"
     environment:
       # PostgreSQL的 superuser 的密码, 而superuser是由POSTGRES_USER定义
       POSTGRES_PASSWORD: root
