@@ -28,7 +28,8 @@ services:
 #        source: ../bbsdb  # 在根目录
 #        target: /var/lib/postgresql/data
         source: "/var/lib/postgresql/9.5/main"  # host
-        target: "/var/lib/postgresql/9.5/main"  # container
+#        target: "/var/lib/postgresql/9.5/main"  # container
+        target: /var/lib/postgresql/data/bbs-data  # container
 
   adminer:
     image: adminer
