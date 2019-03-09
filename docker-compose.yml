@@ -24,7 +24,7 @@ services:
           - bbsdb
 
     volumes:
-      - type: bind
+      - type: "bind"
 #        source: ../bbsdb  # 在根目录
 #        target: /var/lib/postgresql/data
         source: "/var/lib/postgresql/9.5/main"  # host
