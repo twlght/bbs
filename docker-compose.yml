@@ -1,38 +1,65 @@
-version: "2"
+version: "3"
 
 services:
   db:
     image: postgres:alpine
-    # restart: always
-#    ports:
-#      - "5432:5432"
+    restart: always
+    ports:
+      - "5432:5432"
     environment:
+      # PostgreSQL的 superuser 的密码, 而superuser是由POSTGRES_USER定义
       POSTGRES_PASSWORD: root
-      PGDATA: /var/lib/postgresql/data/bbs-data
 
+      # POSTGRES_USER 如果没有指定则使用默认用户 ( postgres ??? )
+
+      # POSTGRES_DB 定义数据库名, 如果没有指定, 则使用 POSTGRES_USER 的值
+
+      # PGDATA 用于指定数据库文件位置, 默认值为: /var/lib/postgresql/9.5/main(官网的跟这个不一样, 这是现查的)
+      # PGDATA: /var/lib/postgresql/data/bbs-data
+
+    # 表示db在这个默认网路中(default network)的假名是bbsdb
+    networks:
+      default:
+        alias:
+          - bbsdb
+
+    volumes:
+      - type: bind
+#        source: ../bbsdb  # 在根目录
+#        target: /var/lib/postgresql/data
+        source: /var/lib/postgresql/9.5/main  # host
+        target: /var/lib/postgresql/9.5/main  # container
 
   adminer:
     image: adminer
     restart: always
     ports:
       - "8081:8080"
-      # 用浏览器访问8081端口
+      # [host:container] 用浏览器访问8081端口
 
   api:
-    #restart: always
+    restart: always
     stdin_open: true
     # tty: true
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    links:
-     - db:bbsdb
+
+    # 一般build指定Dockerfile路径(绝对或者相对路径)
+    build: .
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+
+#    links:  # deprecated
+#     - db:bbsdb  # 在config.py文件里数据库用的是bbsdb, 这里也需要设置整个假名
+
     volumes:
       - ../www:/www
-      # - ./nginx_flask.conf:/etc/nginx/sites-available/nginx_flask.conf
+      - ./bbs.nginx:/etc/nginx/sites-available/bbs.nginx
       # - ./gunicorn.conf:/etc/supervisor/conf.d/gunicorn.conf
-      # - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     ports:
       - "80:80"
       - "2000:2000"
-      # 对外端口80, 映射到宿主机的8080
+      # [host:container]
+
+networks:
+  default:

@@ -36,7 +36,7 @@ RUN pip3 install -r /bbs/bbs_app/requirements.txt -i http://mirrors.tencentyun.c
 
 # 设置 nginx
 RUN rm /etc/nginx/sites-enabled/default
-COPY bbs.nginx /etc/nginx/sites-available/
+#COPY bbs.nginx /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/bbs.nginx /etc/nginx/sites-enabled/bbs.nginx
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
@@ -45,7 +45,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # 通过supervisorctl来管理使用supervisor启动和管理的自身的一些应用，如我们的这里的app.py
 RUN mkdir -p /var/log/supervisor
 # RUN echo_supervisord_conf > /etc/supervisord.conf
-COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+#COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 RUN echo "/bbs/bbs_app" > /usr/local/lib/python3.5/dist-packages/bbs.pth
 # RUN python3 generate_fake.py
 
