@@ -3,7 +3,7 @@ version: "3.2"
 services:
   db:
     image: postgres:alpine
-    # restart: always
+    restart: always
     ports:
       - "5431:5432"
     environment:
@@ -15,8 +15,7 @@ services:
       # POSTGRES_DB 定义数据库名, 如果没有指定, 则使用 POSTGRES_USER 的值
 
       # PGDATA 用于指定数据库文件位置, 默认值为: /var/lib/postgresql/9.5/main(官网的跟这个不一样, 这是现查的)
-       PGDATA: /var/lib/postgresql/data/bbs-data
-#      PGDATA: /var/lib/postgresql/9.5/main
+      # PGDATA: /var/lib/postgresql/data/bbs-data
 
     # 表示db在这个默认网路中(default network)的假名是bbsdb
     networks:
