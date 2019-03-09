@@ -20,15 +20,15 @@ services:
     # 表示db在这个默认网路中(default network)的假名是bbsdb
     networks:
       default:
-        alias:
+        aliases:
           - bbsdb
 
     volumes:
       - type: bind
 #        source: ../bbsdb  # 在根目录
 #        target: /var/lib/postgresql/data
-        source: /var/lib/postgresql/9.5/main  # host
-        target: /var/lib/postgresql/9.5/main  # container
+        source: "/var/lib/postgresql/9.5/main"  # host
+        target: "/var/lib/postgresql/9.5/main"  # container
 
   adminer:
     image: adminer
