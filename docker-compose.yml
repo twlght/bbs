@@ -29,7 +29,7 @@ services:
 #        target: /var/lib/postgresql/data
         source: "/root/bbsdb"  # host
 #        target: "/var/lib/postgresql/9.5/main"  # container
-        target: /var/lib/postgresql/data/  # container
+        target: /var/lib/postgresql/data/bbs-data  # container
 
   adminer:
     image: adminer
