@@ -28,7 +28,7 @@ WORKDIR /bbs
 # RUN ["/bin/bash", "-c", "source bbs-venv/bin/activate"]
 
 # only copy requirements.txt.  othors will be mounted by -v
-COPY bbs_app /bbs/bbs_app
+#COPY bbs_app /bbs/bbs_app
 # 安装python包
 RUN ls -la /root/
 RUN ls -l /bbs/bbs_app/
