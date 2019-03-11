@@ -30,6 +30,7 @@ services:
         source: "/root/bbsdb"  # host
 #        target: "/var/lib/postgresql/9.5/main"  # container
         target: /var/lib/postgresql/data/bbs-data  # container
+        # 使用/var/lib/postgresql/data 会报错, Duplicate mount point: /var/lib/postgresql/data 不知道原因
 
   adminer:
     image: adminer
