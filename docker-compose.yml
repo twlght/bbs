@@ -57,7 +57,7 @@ services:
       - ../www:/www
       - ./bbs.nginx:/etc/nginx/sites-available/bbs.nginx
       # - ./gunicorn.conf:/etc/supervisor/conf.d/gunicorn.conf
-      - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
     ports:
       - "80:80"
       - "2000:2000"
