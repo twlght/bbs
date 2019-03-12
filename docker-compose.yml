@@ -55,7 +55,7 @@ services:
 
     volumes:
       - ../www:/www
-      - ./bbs_app/:/bbs/bbs_app
+#      - ./bbs_app:/bbs/bbs_app
       - ./bbs.nginx:/etc/nginx/sites-available/bbs.nginx
       # - ./gunicorn.conf:/etc/supervisor/conf.d/gunicorn.conf
       - ./supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
