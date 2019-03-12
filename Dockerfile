@@ -30,8 +30,8 @@ WORKDIR /bbs
 # only copy requirements.txt.  othors will be mounted by -v
 #COPY bbs_app /bbs/bbs_app
 # 安装python包
-RUN ls -la /root/
-RUN ls -l /bbs/bbs_app/
+#RUN ls -la /root/
+#RUN ls -l /bbs/bbs_app/
 RUN pip3 install -r /bbs/bbs_app/requirements.txt -i http://mirrors.tencentyun.com/pypi/simple --trusted-host mirrors.tencentyun.com
 
 # 设置 nginx
