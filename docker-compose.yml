@@ -41,7 +41,7 @@ services:
   db:
     image: mysql
     # 不确定这里要不要加mysqld
-    command: mysqld --default-authentication-plugin=mysql_native_password
+    # command: mysqld --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: mysql123
