@@ -1,42 +1,57 @@
 version: "3.2"
 
 services:
+#  db:
+#    image: postgres:alpine
+#    restart: always
+#    ports:
+#      - "5431:5432"
+#    environment:
+#
+#      # 这里根本没用到
+##      POSTGRES_USER: bbspostgres
+#      # PostgreSQL的 superuser 的密码, 而superuser是由POSTGRES_USER定义
+##      POSTGRES_PASSWORD: 123456
+#
+#      PGUSER: postgres
+#      PGPASSWORD: 123456
+#
+#      # POSTGRES_USER 如果没有指定则使用默认用户 ( postgres ??? )
+#
+#      # POSTGRES_DB 定义数据库名, 如果没有指定, 则使用 POSTGRES_USER 的值
+#
+#      # PGDATA 用于指定数据库文件位置, 默认值为: /var/lib/postgresql/9.5/main(官网的跟这个不一样, 这是现查的)
+#      PGDATA: /var/lib/postgresql/data/bbs-data
+#
+#    # 表示db在这个默认网路中(default network)的假名是bbsdb
+#    networks:
+#      default:
+#        aliases:
+#          - bbsdb
+#
+#    volumes:
+#      - type: "bind"
+##        source: ../bbsdb  # 在根目录
+##        target: /var/lib/postgresql/data
+#        source: "/root/bbsdb"  # host
+##        target: "/var/lib/postgresql/9.5/main"  # container
+#        target: /var/lib/postgresql/data/bbs-data  # container
+#        # 使用/var/lib/postgresql/data 会报错, Duplicate mount point: /var/lib/postgresql/data 目前不知道原因
+
   db:
-    image: postgres:alpine
+    image: mysql
+    # 不确定这里要不要加mysqld
+    command: mysqld --default-authentication-plugin=mysql_native_password
     restart: always
-    ports:
-      - "5431:5432"
     environment:
-
-      # 这里根本没用到
-#      POSTGRES_USER: bbspostgres
-      # PostgreSQL的 superuser 的密码, 而superuser是由POSTGRES_USER定义
-#      POSTGRES_PASSWORD: 123456
-
-      PGUSER: postgres
-      PGPASSWORD: 123456
-
-      # POSTGRES_USER 如果没有指定则使用默认用户 ( postgres ??? )
-
-      # POSTGRES_DB 定义数据库名, 如果没有指定, 则使用 POSTGRES_USER 的值
-
-      # PGDATA 用于指定数据库文件位置, 默认值为: /var/lib/postgresql/9.5/main(官网的跟这个不一样, 这是现查的)
-      PGDATA: /var/lib/postgresql/data/bbs-data
-
-    # 表示db在这个默认网路中(default network)的假名是bbsdb
-    networks:
-      default:
-        aliases:
-          - bbsdb
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: mysqldb
 
     volumes:
       - type: "bind"
-#        source: ../bbsdb  # 在根目录
-#        target: /var/lib/postgresql/data
         source: "/root/bbsdb"  # host
-#        target: "/var/lib/postgresql/9.5/main"  # container
-        target: /var/lib/postgresql/data/bbs-data  # container
-        # 使用/var/lib/postgresql/data 会报错, Duplicate mount point: /var/lib/postgresql/data 目前不知道原因
+        target: /var/lib/mysql # container
+
 
   adminer:
     image: adminer
