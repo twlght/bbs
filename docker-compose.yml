@@ -7,10 +7,14 @@ services:
     ports:
       - "5431:5432"
     environment:
-      
-      POSTGRES_USER: bbspostgres
+
+      # 这里根本没用到
+#      POSTGRES_USER: bbspostgres
       # PostgreSQL的 superuser 的密码, 而superuser是由POSTGRES_USER定义
-      POSTGRES_PASSWORD: 123456
+#      POSTGRES_PASSWORD: 123456
+
+      PGUSER: bbspostgres
+      PGPASSWORD: 123456
 
       # POSTGRES_USER 如果没有指定则使用默认用户 ( postgres ??? )
 
