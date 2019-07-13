@@ -18,6 +18,7 @@ class Comment(db.Model):
             # 'url': url_for('api.get_post', id=self.id, _external=True),
             # 'url': '/post/{}'.format(self.id),
             # 'title': self.title,
+            'id': id,
             'body': self.body,
             'timestamp': self.timestamp.date().isoformat(),
             'author': self.author.username,
