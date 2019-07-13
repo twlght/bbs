@@ -22,6 +22,7 @@ class Post(db.Model):
     def to_json(self):
         json_post = {
             # 'url': url_for('api.get_post', id=self.id, _external=True),
+            'id': id,
             'url': '/post/{}'.format(self.id),
             'title': self.title,
             'body': self.body,
