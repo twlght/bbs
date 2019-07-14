@@ -48,12 +48,6 @@ def get_users():
     return jsonify([user.to_json() for user in users])
 
 
-@main.route('/token_login')
-@jwt_required()
-def get_loggedin_user():
-    return jsonify(current_identity.to_json())
-
-
 @main.route('/user/<params>')
 def get_user_by_id(params):
     print('params: {}'.format(params))
