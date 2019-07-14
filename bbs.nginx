@@ -6,6 +6,9 @@ server {
     location ^~ /login {
         proxy_pass http://localhost:2000;
     }
+    location ^~ /token_login {
+        proxy_pass http://localhost:2000;
+    }
     location ^~ /register {
         proxy_pass http://localhost:2000;
     }

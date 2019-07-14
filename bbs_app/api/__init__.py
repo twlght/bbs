@@ -34,7 +34,7 @@ api:
 @main.route('/boards')
 def get_boards():
     boards = Board.query.all()
-    log('mark1')
+    # log('mark1')
     return jsonify([board.to_json() for board in boards])
     # return jsonify([{
     #         'id': 1,
