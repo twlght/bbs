@@ -4,7 +4,7 @@ from flask import (
     jsonify,
 )
 from flask_jwt import jwt_required, current_identity
-
+from utils import log
 from models.user import User
 
 main = Blueprint('auth', __name__)
@@ -21,6 +21,7 @@ def register():
 @main.route('/token_login')
 @jwt_required()
 def get_loggedin_user():
+    log(jsonify(current_identity.to_json()))
     return jsonify(current_identity.to_json())
 # '/login' 由 flask_jwt 定义
 
