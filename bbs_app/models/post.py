@@ -2,7 +2,7 @@ import datetime
 
 from flask_jwt import current_identity
 from sqlalchemy.exc import IntegrityError
-
+from utils import log
 from app import db
 
 
@@ -10,6 +10,7 @@ class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128), index=True)
+    value = db.Column(db.Text)
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.date.today())
     # author 来自User
@@ -25,6 +26,7 @@ class Post(db.Model):
             'id': self.id,
             'url': '/post/{}'.format(self.id),
             'title': self.title,
+            'value': self.value,
             'body': self.body,
             'timestamp': self.timestamp.date().isoformat(),
             'author': self.author.username,
@@ -39,11 +41,23 @@ class Post(db.Model):
         }
         return json_post
 
+    def add_views(self):
+        self.views += 1
+        db.session.add(self)
+        try:
+            db.session.commit()
+            log('post-id-{} add views to {}'.format(self.id, self.views))
+        except IntegrityError:
+            db.session.rollback()
+        pass
+
     @classmethod
     def generate_post(cls, form):
         post = Post(title=form['title'],
                     board_id=form['boardId'],
-                    body=form['content'],
+                    value=form['value'],
+                    body=form['render'],
+                    # render=form['render'],
                     author_id=current_identity.id,
                     )
         db.session.add(post)
@@ -67,10 +81,11 @@ class Post(db.Model):
         for i in range(count):
             u = User.query.offset(randint(0, user_count - 1)).first()
             b = Board.query.offset(randint(0, board_count - 1)).first()
-            p = Post(body=forgery_py.lorem_ipsum.sentences(randint(11, 93)),
+            p = Post(value=forgery_py.lorem_ipsum.sentences(randint(11, 93)),
+                     body='<p>this is body</p><p>this is render</p>',
                      title=forgery_py.lorem_ipsum.title(randint(1, 6)),
                      timestamp=forgery_py.date.date(True),
-                     views=randint(1, 1000),
+                     views=randint(1, 10),
                      author=u,
                      board=b)
             db.session.add(p)
@@ -85,6 +100,7 @@ class Post(db.Model):
 
 def main():
     pass
+
 
 if __name__ == '__main__':
     # main()

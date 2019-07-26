@@ -22,6 +22,7 @@ class User(db.Model):
 
     # to_json(), 将实例转化为json, 实际上是先变成dict返回, 在路由函数中jsonify
     def to_json(self):
+        posts = [post for post in self.posts]
         json_user = {
             'id': self.id,
             'username': self.username,
@@ -29,8 +30,10 @@ class User(db.Model):
             'location': self.location,
             'quote': self.about_me,
             'member_since': self.member_since.isoformat(),
-            'posts': [post.to_json() for post in self.posts],
-            'profilePhoto': self.profile_photo
+            'posts': [post.to_json() for post in posts],
+            'articleCount': len(posts),
+            'profilePhoto': self.profile_photo,
+            'userURL': '/user/{}'.format(self.id),
         }
         return json_user
 

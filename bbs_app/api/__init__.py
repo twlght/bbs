@@ -84,11 +84,15 @@ def get_posts():
 @main.route('/posts', methods=['POST'])
 @jwt_required()
 def post_post():
-    log('request headers: {}'.format(request.headers))
+    log('request headers: \n{}'.format(request.headers))
     # current_user = current_identity
     log('current_identity: ', current_identity)
+    # form = request.form
+    # log('form:', form)
     req_json = request.json
-    log('req_json:', req_json)  # dict
+    # log('req_json:', req_json)  # dict
+    # log('req_data:', request.data)
+    # log('**********************************************')
     post = Post.generate_post(req_json)
     return jsonify(post.to_json())
 
@@ -97,6 +101,7 @@ def post_post():
 def get_post(id):
     # id = request.args.get('id')
     post = Post.query.filter_by(id=int(id)).first()
+    post.add_views()
     return jsonify(post.to_json())
 
 

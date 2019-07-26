@@ -13,7 +13,7 @@ main = Blueprint('auth', __name__)
 @main.route('/register', methods=['POST'])
 def register():
     req_json = request.json
-    print('req_json:', req_json)  # dict
+    log('req_json:', req_json)  # dict
     user = User.register(req_json)
     return jsonify(user.to_json())
 

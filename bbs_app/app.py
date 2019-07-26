@@ -60,7 +60,7 @@ def configure_jwt(app):
         return User.query.filter_by(id=user_id).first()
 
     CONFIG_DEFAULTS['JWT_AUTH_URL_RULE'] = '/login'
-    # CONFIG_DEFAULTS['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3000),  # 过期时间 3000s
+    CONFIG_DEFAULTS['JWT_EXPIRATION_DELTA'] = timedelta(seconds=3000)  # 过期时间 3000s
     jwt.init_app(app)
 
 
